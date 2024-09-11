@@ -1,0 +1,250 @@
+Parent class 
+#app.component.html
+<h2>Student Details</h2>
+
+<!-- Table to display student details -->
+<table border="1">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Gender</th>
+      <th>Grade</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Use *ngFor to loop through students array -->
+    <tr *ngFor="let student of students">
+      <td>{{ student.name }}</td>
+      <td>{{ student.age }}</td>
+      <td>{{ student.gender }}</td>
+      <td>{{ student.grade }}</td>
+    </tr>
+  </tbody>
+</table>
+
+#app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  // Array of student objects
+  students = [
+    { name: 'Aditya Budhwant', age: 21, gender: 'Male', grade: 'A' },
+    { name: 'Shubham Shirsath', age: 21, gender: 'Male', grade: 'A+' },
+    { name: 'Suyog Badhade', age: 22, gender: 'Male', grade: 'A' },
+    { name: 'Aditya Wani', age: 22, gender: 'Male', grade: 'A+' },
+    { name: 'Nivedita Sonavane', age: 22, gender: 'Female', grade: 'A+' },
+    { name: 'Sonika Waghmare', age: 22, gender: 'Female', grade: 'A+' },
+    { name: 'Vaishnavi Bhujbal', age: 22, gender: 'Female', grade: 'A+' },
+    { name: 'Amar Sherkar', age: 23, gender: 'Male', grade: 'A' },
+    { name: 'Shubham Dabhade', age: 22, gender: 'Male', grade: 'A+' },
+    { name: 'Yash Dange', age: 21, gender: 'Male', grade: 'A' }
+  ];
+}
+
+app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms'; // Import FormsModule
+
+import { AppComponent } from './app.component';
+import { Q2Component } from './q2/q2.component'; // Import Q2Component
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    Q2Component // Declare Q2Component
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule // Add FormsModule here
+  ],
+  providers: [],
+  bootstrap: [Q2Component]
+})
+export class AppModule { }
+
+#app.component.css
+/* Center the table and add some space above */
+table {
+  margin: 20px auto;
+  border-collapse: collapse;
+  width: 60%;
+  font-family: Arial, sans-serif;
+}
+
+/* Table headers styling */
+th {
+  background-color: black;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+/* Table rows styling */
+td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Add hover effect to table rows */
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+
+Child class
+#q2.component.ts
+<div class="container">
+  <!-- Input area for new notes with ngModel binding -->
+  <input [(ngModel)]="newNote" placeholder="Enter a new note" />
+  <button (click)="addNote()">Add Note</button>
+
+  <!-- Display notes only if there are any -->
+  <div *ngIf="notes.length > 0" class="notes-section">
+    <h3>Notes:</h3>
+    <ul>
+      <li *ngFor="let note of notes; let i = index">
+        {{ note.text }} ({{ note.timestamp }})
+        <button (click)="removeNote(i)">Remove</button>
+      </li>
+    </ul>
+  </div>
+</div>
+
+q2.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-q2',
+  templateUrl: './q2.component.html',
+  styleUrls: ['./q2.component.css']
+})
+export class Q2Component {
+  newNote = '';
+  notes: { text: string, timestamp: string }[] = [];
+
+  addNote() {
+    if (this.newNote.trim() !== '') {
+      const now = new Date();
+      const timestamp = now.toLocaleString();
+      const note = { text: this.newNote, timestamp: timestamp };
+      
+      this.notes.push(note);
+      this.newNote = '';
+    }
+  }
+
+  removeNote(index: number) {
+    if (index >= 0 && index < this.notes.length) {
+      this.notes.splice(index, 1);
+    }
+  }
+}
+
+q2.component.css
+/* Container for the entire application */
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Heading styles */
+h1 {
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Input field and button styling */
+input[type="text"] {
+  width: calc(100% - 110px);
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Notes section styles */
+.notes-section {
+  margin-top: 30px;
+}
+
+/* Notes list styling */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s;
+}
+
+li:hover {
+  background-color: #f1f1f1;
+}
+
+li strong {
+  font-weight: bold;
+  color: #555;
+}
+
+li p {
+  margin: 0;
+  flex: 1;
+  padding-right: 10px;
+  color: #333;
+}
+
+/* Remove button styling */
+li button {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+li button:hover {
+  background-color: #c82333;
+}
