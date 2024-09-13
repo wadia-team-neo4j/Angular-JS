@@ -248,3 +248,60 @@ li button {
 li button:hover {
   background-color: #c82333;
 }
+
+
+
+
+
+----------------------------------------
+import numpy as np
+import matplotlib.pyplot as plt
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
+from tensorflow.keras.models import Model
+
+# Load and preprocess the image
+img_path = '/content/flower.jpg'  # Replace with your image path
+img = image.load_img(img_path, target_size=(224, 224))
+img_array = image.img_to_array(img)
+img_array = np.expand_dims(img_array, axis=0)
+img_array = preprocess_input(img_array)
+
+# Load VGG16 model pre-trained on ImageNet
+base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+
+# Define the model to extract intermediate layers' outputs
+model = Model(inputs=base_model.input, outputs=[layer.output for layer in base_model.layers])
+
+# Get the feature maps
+feature_maps = model.predict(img_array)
+
+# Define the layer names and indices
+layer_names = [layer.name for layer in base_model.layers]
+activation_layer_name = 'block1_conv1'
+pooling_layer_name = 'block1_pool'
+convolutional_layer_name = 'block1_conv1'
+
+activation_layer_index = layer_names.index(activation_layer_name)
+pooling_layer_index = layer_names.index(pooling_layer_name)
+convolutional_layer_index = layer_names.index(convolutional_layer_name)
+
+# Plot feature maps for the specified layers
+plt.figure(figsize=(15, 10))
+
+plt.subplot(1, 3, 1)
+plt.imshow(feature_maps[activation_layer_index][0, :, :, 0], cmap='viridis')
+plt.title("block1_act1")
+plt.axis('off')
+
+plt.subplot(1, 3, 2)
+plt.imshow(feature_maps[pooling_layer_index][0, :, :, 0], cmap='gray')
+plt.title(pooling_layer_name)
+plt.axis('off')
+
+plt.subplot(1, 3, 3)
+plt.imshow(feature_maps[convolutional_layer_index][0, :, :, 0], cmap='viridis')
+plt.title(convolutional_layer_name)
+plt.axis('off')
+
+plt.show()
